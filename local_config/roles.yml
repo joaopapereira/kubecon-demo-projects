@@ -1,0 +1,9 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"RoleBinding"})
+---
+subjects:
+  #@overlay/append
+  - kind: ServiceAccount
+    name: admin-svc
+    namespace: default
