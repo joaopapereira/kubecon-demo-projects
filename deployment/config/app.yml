@@ -1,0 +1,80 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ data.values.app.namespace
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: projects-app-sa
+  namespace: #@ data.values.app.namespace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: projects-app-role
+  namespace: #@ data.values.app.namespace
+rules:
+  - apiGroups:
+      - #@ data.values.crd.group
+    resources:
+      - projects
+    verbs:
+      - list
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: projects-app-role-binding
+  namespace: #@ data.values.app.namespace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: projects-app-role
+subjects:
+  - kind: ServiceAccount
+    name: projects-app-sa
+    namespace: #@ data.values.app.namespace
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: projects-app
+  namespace: #@ data.values.app.namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: projects-app
+  template:
+    metadata:
+      labels:
+        app: projects-app
+    spec:
+      serviceAccountName: projects-app-sa
+      containers:
+        - name: ui
+          image: project-app-image
+          env:
+            - name: TEAM_NAME
+              value: #@ data.values.app.namespace
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: projects-app-service
+  namespace: #@ data.values.app.namespace
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app: projects-app

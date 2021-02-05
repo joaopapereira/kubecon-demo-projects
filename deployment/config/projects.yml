@@ -1,0 +1,15 @@
+#@ load("@ytt:data", "data")
+
+#@ load("helpers.star",crdAPIVersion="crdAPIVersion")
+
+#@ for project in data.values.projects:
+---
+apiVersion: #@ crdAPIVersion()
+kind: "Project"
+metadata:
+  name: #@ "proj-" + project.name
+  namespace: #@ project.namespace
+spec:
+  name: #@ project.name
+  description: #@ project.description
+#@ end

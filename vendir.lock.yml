@@ -1,0 +1,17 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/carvel-ytt/releases/36243897
+    path: github.com/vmware-tanzu/carvel-ytt
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/carvel-kapp/releases/35262973
+    path: github.com/vmware-tanzu/carvel-kapp
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/carvel-imgpkg/releases/37371286
+    path: github.com/vmware-tanzu/carvel-imgpkg
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/carvel-kbld/releases/36358084
+    path: github.com/vmware-tanzu/carvel-kbld
+  path: bin
+kind: LockConfig

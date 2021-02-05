@@ -1,0 +1,23 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+directories:
+  - path: bin
+    contents:
+      - path: download_ytt
+        githubRelease:
+          slug: vmware-tanzu/carvel-ytt
+          tag: v0.31.0
+        includePaths:
+          - ytt-darwin-amd64
+      - path: download_kapp
+        githubRelease:
+          slug: vmware-tanzu/carvel-kapp
+          tag: v0.35.0
+        includePaths:
+          - kapp-darwin-amd64
+      - path: download_kbld
+        githubRelease:
+          slug: vmware-tanzu/carvel-kbld
+          tag: v0.28.0
+        includePaths:
+          - kbld-darwin-amd64

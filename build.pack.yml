@@ -1,0 +1,12 @@
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+sources:
+  - image: project-app-image
+    path: .
+    pack:
+      build:
+        builder: cloudfoundry/cnb:bionic
+destinations:
+    - image: project-app-image
+      newImage: localhost:5000/projects-app

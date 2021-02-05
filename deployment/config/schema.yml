@@ -1,0 +1,14 @@
+#@schema/match data_values=True
+---
+crd:
+  group: example.carvel.dev
+  version: v1alpha1
+
+app:
+  namespace: "project-app"
+
+projects:
+  - name: ""
+    namespace: "default"
+    #@schema/nullable
+    description: ""
