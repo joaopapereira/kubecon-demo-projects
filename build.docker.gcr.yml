@@ -6,4 +6,4 @@ sources:
     path: .
 destinations:
   - image: project-app-image
-    newImage: localhost:5000/projects-app
+    newImage: gcr.io/cf-k8s-lifecycle-tooling-klt/demo-projects-app

@@ -1,0 +1,9 @@
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+sources:
+  - image: project-app-image
+    path: .
+destinations:
+  - image: project-app-image
+    newImage: k8slt/demo-projects-app

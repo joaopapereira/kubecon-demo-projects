@@ -9,4 +9,4 @@ sources:
         builder: cloudfoundry/cnb:bionic
 destinations:
     - image: project-app-image
-      newImage: localhost:5000/projects-app
+      newImage: k8slt/demo-projects-app
