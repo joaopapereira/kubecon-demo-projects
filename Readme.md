@@ -1,5 +1,9 @@
 # Demo of Carvel Tool Suite
 
+![logo](assets/CarvelLogo.png)
+
+The Carvel Tool Suite website [carvel.dev](https://carvel.dev)
+
 ## Setting up the development environment
 ### Prerequirements
 - Go >=1.13
@@ -10,16 +14,9 @@
 ### Setup local environment
 We rely on multiple tools from the Carvel Tool Suite and this repository contains
 configuration needed to download these tools.
-In order to do this we use `vendir` to retrieve the binaries as well as some configurations????
+In order to do this we use `vendir` to retrieve the binaries as well as some configurations.
 
-:construction: Talk a little bit about the advantage of vendir
-
-### Using vendir
-
-- download binaries
-- download configurations from git in a gitops style
-- keep code in sync from a different source
-- download other blobs or something
+For more information on `vendir` check [carvel website](https://carvel.dev/vendir)
 
 
 ### Create configuration for application
@@ -63,6 +60,7 @@ Explanation of the arguments:
 - `-f tmp/values.yml`: file with the above information
 - `--enable-experiment-schema`: Enable the Schema feature(we still haven't made schemas a default behavior of `ytt`)
 
+For more information on `ytt` check [carvel website](https://carvel.dev/ytt)
 
 ### Create application images
 
@@ -77,6 +75,8 @@ Explanation of the arguments:
   build images that are used.
 - `--imgpkg-lock-output tmp/images.yml`: This is not mandatory, but creates an image lock file that will
   be used on our next step to create a bundle using `imgpkg`
+
+For more information on `kbld` check [carvel website](https://carvel.dev/kbld)
 
 ## Packaging
 
@@ -99,6 +99,8 @@ This is done by executing the following commands
     Explanation of the arguments:
     - `-b k8slt/projects-bundle:v1`: Repository where our bundle will be uploaded to
     - `-f bundle -f deployment`: there 2 folders contain the deployment files as well as the bundle configuration
+
+For more information on `imgpkg` check [carvel website](https://carvel.dev/imgpkg)
 
 ## Deployment
 
@@ -177,3 +179,5 @@ Above command steps:
 
 To check what is installed executing the following command
 `bin/kapp inspect -a team-1-projects-app`
+
+For more information on `kapp` check [carvel website](https://carvel.dev/kapp)
