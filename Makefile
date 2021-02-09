@@ -26,9 +26,10 @@ get-carvel:
 	cp bin/github.com/vmware-tanzu/carvel-ytt/ytt-darwin-amd64 bin/ytt
 	chmod u+x bin/ytt
 
-run-demo:
-	bin/kbld -f build.docker.yml -f deployment/config/app.yml --imgpkg-lock-output tmp/images.yml
+run-demo: get-carvel
+	bin/kbld -f build.docker.gcr.yml -f deployment/config/app.yml --imgpkg-lock-output tmp/images.yml
 	mkdir -p bundle/.imgpkg && cp tmp/images.yml bundle/.imgpkg/images.yml
+	mkdir tmp
 	bin/imgpkg push -b k8slt/projects-bundle:v1 -f bundle -f deployment --lock-output tmp/bundle.lock.yml
 	bin/imgpkg copy --lock tmp/bundle.lock.yml --to-repo localhost:5000/projects-bundle-to-deploy
 	bin/imgpkg pull --lock tmp/bundle.lock.yml -o tmp/projects-bundle

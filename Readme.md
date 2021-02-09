@@ -94,6 +94,7 @@ This is done by executing the following commands
 2. Run `imgpkg`
    
     `bin/imgpkg push -b k8slt/projects-bundle:v1 -f bundle -f deployment`
+    `bin/imgpkg push -b gcr.io/cf-k8s-lifecycle-tooling-klt/projects-bundle:v1 -f bundle -f deployment`
    
     Explanation of the arguments:
     - `-b k8slt/projects-bundle:v1`: Repository where our bundle will be uploaded to
@@ -114,6 +115,7 @@ This step is optional but usually recommend.
 
 This is done by executing the following command
 `bin/imgpkg copy -b k8slt/projects-bundle@sha256:77c7e2dd9293499a2a1f11fbba5cd57f36e11281c5fc6fd10d316b8824df70d7 --to-repo localhost:5000/projects-bundle-to-deploy`
+`bin/imgpkg copy -b gcr.io/cf-k8s-lifecycle-tooling-klt/projects-bundle@sha256:77c7e2dd9293499a2a1f11fbba5cd57f36e11281c5fc6fd10d316b8824df70d7 --to-repo localhost:5000/projects-bundle-to-deploy`
 
 Explanation of the arguments:
 - `-b k8slt/projects-bundle@sha256:77c7e2dd9293499a2a1f11fbba5cd57f36e11281c5fc6fd10d316b8824df70d7`: Exact version of the software we want to run
