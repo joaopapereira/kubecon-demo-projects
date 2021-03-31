@@ -1,0 +1,31 @@
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+
+metadata:
+  name: simple-app
+  # namespace is going to be used as a default namespace during kapp deploy
+  namespace: ns
+
+spec:
+  # specifies that app should be deployed authenticated via
+  # given service account, found in this namespace (optional; v0.6.0+)
+  serviceAccountName: sa-name
+  fetch:
+      - imgpkgBundle:
+        image: gcr.io/cf-k8s-lifecycle-tooling-klt/kubecon-demo-projects@sha256:aa196192c5f28fafb33622e571f5775e0ef6b83bfee663c1308cb1e63d7a294b
+        - git:
+            url: https://github.com/joaopapereira/kubecon-demo-projects
+            ref: origin/local_configuration
+  template:
+    - ytt:
+        paths:
+          - 0/config
+          - 1/local_config
+    - kbld:
+        paths:
+          # - must be quoted when included with paths
+          - "-"
+          - 0/.imgpkg/images.yml
+  deploy:
+    - kapp: {}
+
