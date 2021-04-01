@@ -45,7 +45,9 @@ spec:
               port: http
           env:
             - name: MESSAGE
-              value: {{ .Values.app.message}}
+              value: {{ .Values.app.message }}
+            - name: VERSION
+              value: {{ .Chart.Version }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

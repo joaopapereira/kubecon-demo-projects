@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: gcr.io/cf-k8s-lifecycle-tooling-klt/demo-projects-app@sha256:01ae2565986fa97b2399282d044ac0eeb797262ed421fb2b1a05fc3730201cd0
+  repository: gcr.io/cf-k8s-lifecycle-tooling-klt/demo-projects-app@sha256:ec8a8d64139cfedce7b6850bc931fb657d08f64ab58d3df19d236a62b541bd87
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
