@@ -18,7 +18,7 @@ directories:
       - path: github.com/vmware-tanzu/carvel-imgpkg
         githubRelease:
           slug: vmware-tanzu/carvel-imgpkg
-          tag: v0.4.0
+          tag: v0.6.0
         includePaths:
           - imgpkg-darwin-amd64
       - path: github.com/vmware-tanzu/carvel-kbld

@@ -1,0 +1,19 @@
+apiVersion: package.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: hello-world-helm.1.0.0
+spec:
+  publicName: hello-world.carvel.dev
+  version: 1.0.0
+  template:
+    spec:
+      fetch:
+        - git:
+            url: https://github.com/joaopapereira/kubecon-demo-projects
+            ref: origin/main
+            subPath: demo/simple-app-cr
+      template:
+        - helmTemplate:
+            path: hello-world
+      deploy:
+        - kapp: { }

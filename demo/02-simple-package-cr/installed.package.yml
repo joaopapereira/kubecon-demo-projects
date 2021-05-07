@@ -1,0 +1,23 @@
+apiVersion: install.package.carvel.dev/v1alpha1
+kind: InstalledPackage
+metadata:
+  name: hello-world-1-0-0
+  namespace: demo-2-ns
+spec:
+  serviceAccountName: demo-2-sa
+  packageRef:
+    publicName: hello-world.carvel.dev
+    version: 1.0.0
+  values:
+    - secretRef:
+        name: hello-world-1.0.0-values
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hello-world-1.0.0-values
+  namespace: demo-2-ns
+stringData:
+  0-values.yml: |
+    app:
+      message: Message from InstalledPackage

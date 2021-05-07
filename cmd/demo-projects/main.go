@@ -11,9 +11,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/joaopapereira/webinar-demo-projects/pkg/api/types/v1alpha1"
-	clientV1alpha1 "github.com/joaopapereira/webinar-demo-projects/pkg/clientset/v1alpha1"
-	"github.com/joaopapereira/webinar-demo-projects/pkg/project"
+	"github.com/joaopapereira/kubecon-demo-projects/pkg/api/types/v1alpha1"
+	clientV1alpha1 "github.com/joaopapereira/kubecon-demo-projects/pkg/clientset/v1alpha1"
+	"github.com/joaopapereira/kubecon-demo-projects/pkg/project"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"

@@ -1,4 +1,4 @@
-module github.com/joaopapereira/webinar-demo-projects
+module github.com/joaopapereira/kubecon-demo-projects
 
 go 1.15
 

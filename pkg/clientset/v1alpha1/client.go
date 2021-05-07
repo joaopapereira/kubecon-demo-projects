@@ -8,7 +8,7 @@ import (
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 
-	"github.com/joaopapereira/webinar-demo-projects/pkg/api/types/v1alpha1"
+	"github.com/joaopapereira/kubecon-demo-projects/pkg/api/types/v1alpha1"
 )
 
 type ExampleV1Alpha1Interface interface {

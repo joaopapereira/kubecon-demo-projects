@@ -5,179 +5,118 @@
 The Carvel Tool Suite website [carvel.dev](https://carvel.dev)
 
 ## Setting up the development environment
+
 ### Prerequirements
-- Go >=1.13
-- Make
-- vendir installed from carvel.dev
 
-## During development
-### Setup local environment
-We rely on multiple tools from the Carvel Tool Suite and this repository contains
-configuration needed to download these tools.
-In order to do this we use `vendir` to retrieve the binaries as well as some configurations.
+## Create the thing application
 
-For more information on `vendir` check [carvel website](https://carvel.dev/vendir)
+Generate image with code
 
-
-### Create configuration for application
-
-The configuration for the application can be found in the folder `config`
-
-Interesting files:
-- `schema.yml`: definition of the types that the data values can have
-                Schemas serve as defaults in case no values are provided
-                `#@schema/nullable` annotation defines the next element as nullable, so it can be provided or not in the data values
-- `helpers.star`: Starlark file with helper functions definition used in `crds.yml` and `projects.yml`
-
-Lets create a file with the following data values configuration
-
-```yaml
-#@ load("@ytt:overlay", "overlay")
-#@data/values
----
-projects:
-  #@overlay/append
-  - name: "first-project"
-    namespace: "default"
-  #@overlay/append
-  - name: "second-project"
-    namespace: "other-namespace"
-  #@overlay/append
-  - name: "third-project"
-    namespace: "default"
-    description: "some very nice project"
+```bash
+mkdir -p tmp
+bin/kbld -f build.docker.gcr.yml -f deployment/config/app.yml --imgpkg-lock-output tmp/images.yml
 ```
 
-This is for tests purposes to ensure that when we provide the expected information
-the configuration is generated correctly.
+Presentation layout Before the demo:
 
-To test out our configuration we use the following command
+```bash
+bin/kapp deploy -a kc -f https://raw.githubusercontent.com/vmware-tanzu/carvel-kapp-controller/dev-packaging/alpha-releases/v0.18.0-alpha.5.yml
+```
 
-`bin/ytt -f deployment/config -f tmp/data.yml --enable-experiment-schema`
+### Demo part 1
 
-Explanation of the arguments:
-- `-f config`: folder where `ytt` will retrieve the configuration
-- `-f tmp/values.yml`: file with the above information
-- `--enable-experiment-schema`: Enable the Schema feature(we still haven't made schemas a default behavior of `ytt`)
+#### Before starting
 
-For more information on `ytt` check [carvel website](https://carvel.dev/ytt)
+Creates the namespace, and the service account needed by `kapp-controller` to install the application
 
-### Create application images
+```bash
+make setup-demo-1
+```
 
-To create the OCI Images needed for our application we use `kbld`
+#### Steps of the demo
 
-`bin/kbld -f build.docker.hub.yml -f deployment/config/app.yml --imgpkg-lock-output tmp/images.yml`
+We are using a Helm application, but we can use ytt or manifest This is a Hello World application that writes to the
+logs some text Look at the App Custom Resource As Helen mentioned before we are retrieving the configuration for our
+application from a git repository, this is the repository I have checked out in my editor. The App Custom Resource
+templates the manifests that are present in the git repository and afterwards deploys
 
-Explanation of the arguments:
-- `-f build.docker.hub.yml`: configuration file for kbld to build current source
-  `build.pack.yml` can also be used if we want to build source using `pack`
-- `-f config/app.yml`: file that contains the deployment information. This is important because `kbld` will only
-  build images that are used.
-- `--imgpkg-lock-output tmp/images.yml`: This is not mandatory, but creates an image lock file that will
-  be used on our next step to create a bundle using `imgpkg`
+1. Apply the App CR
+   `bin/kapp deploy -a demo-1 -f demo/01-simple-app-cr/config/app-cr.git.yml`
+1. Check the yaml
+   `kubectl get pod -n demo-1-ns`
+1. Look at the logs to check the message
+   `kubectl logs -n demo-1-ns -lapp.kubernetes.io/instance=simple-app`
 
-For more information on `kbld` check [carvel website](https://carvel.dev/kbld)
+END: Lets see how can we build up from this scenario
 
-## Packaging
+### Demo part 2
 
-This section will describe how might a developer prepare an application to be distributed
-### Creation of bundles
+#### Before starting
 
-Using `imgpkg` the developer can create a bundle with all the needed OCI images with the software
-as well as the configuration that will be needed to use the software.
+1. Creates the namespace, and the service account needed by `kapp-controller` to install the application
+   ```bash
+   make setup-demo-2
+   ```
+1. Create the bundle
 
-In this case we need to package the image that we just built plus our `config` folder.
+```bash
+mkdir -p tmp/bundle/.imgpkg
+helm template hello-world-app demo/01-simple-app-cr/hello-world | bin/kbld -f- --imgpkg-lock-output tmp/bundle/.imgpkg/images.yml
+bin/imgpkg push -b gcr.io/cf-k8s-lifecycle-tooling-klt/demo-hello-world-bundle -f tmp/bundle/ -f demo/01-simple-app-cr/hello-world
+```
 
-This is done by executing the following commands
-1. Create the bundle structure
-    `mkdir -p bundle/.imgpkg && cp tmp/images.yml bundle/.imgpkg/images.yml`
-2. Run `imgpkg`
-   
-    `bin/imgpkg push -b k8slt/projects-bundle:v1 -f bundle -f deployment`
-    `bin/imgpkg push -b gcr.io/cf-k8s-lifecycle-tooling-klt/projects-bundle:v1 -f bundle -f deployment`
-   
-    Explanation of the arguments:
-    - `-b k8slt/projects-bundle:v1`: Repository where our bundle will be uploaded to
-    - `-f bundle -f deployment`: there 2 folders contain the deployment files as well as the bundle configuration
+#### Steps of the demo
 
-For more information on `imgpkg` check [carvel website](https://carvel.dev/imgpkg)
+1. Operator defines the package and make it available to be installed later
+   `bin/kapp deploy -a package-bundle -f demo/02-simple-package-cr/package.bundle.yml`
+1. Check the yaml
+   `kubectl get package hello-world-helm.1.0.0`
+1. Instantiate the application from the package previously defined
+   `bin/kapp deploy -a installed-package-bundle -f demo/02-simple-package-cr/installed.package.yml`
+1. Check that a pod was created with the updated environment variable
+   `kubectl get pod -n demo-2-ns`
+1. Look at the logs to check the message
+   `kubectl logs -n demo-2-ns -lapp.kubernetes.io/instance=hello-world-1-0-0`
 
-## Deployment
+END: Lets see how can we build up from this scenario
 
-For the consumers of the application the developer will have to provide the image repository and,
-the SHA of the bundle in the above case it will be `k8slt/projects-bundle@sha256:77c7e2dd9293499a2a1f11fbba5cd57f36e11281c5fc6fd10d316b8824df70d7`
+### Demo part 3
 
-### Prerequirements for the installation
-Since everything was package using Carvel Tool the consumer will have to download `imgpkg` and for this particular
-application will also need `vendir` to manage other dependencies
+#### Before starting
 
-### Transfer to local registry
+1. Creates the namespace, and the service account needed by `kapp-controller` to install the application
+   ```bash
+   make setup-demo-3
+   ```
+1. Create the bundles
 
-This step is optional but usually recommend.
+```bash
+mkdir -p tmp/bundle/.imgpkg
+helm template hello-world-app demo/01-simple-app-cr/hello-world | bin/kbld -f- --imgpkg-lock-output tmp/bundle/.imgpkg/images.yml
+bin/imgpkg push -b gcr.io/cf-k8s-lifecycle-tooling-klt/demo-hello-world-bundle -f tmp/bundle/ -f demo/03-package-repository-cr/hello-world-1.1.0
+bin/imgpkg push -b gcr.io/cf-k8s-lifecycle-tooling-klt/demo-hello-world-bundle -f tmp/bundle/ -f demo/03-package-repository-cr/hello-world-2.0.0
+bin/kbld -f demo/03-package-repository-cr/repository-v1 --imgpkg-lock-output tmp/package-repository-bundle/.imgpkg/images.yml 
+bin/imgpkg push -b gcr.io/cf-k8s-lifecycle-tooling-klt/demo-package-repository:latest -f demo/03-package-repository-cr/repository-v1 -f tmp/package-repository-bundle
+```
 
-This is done by executing the following command
-`bin/imgpkg copy -b k8slt/projects-bundle@sha256:77c7e2dd9293499a2a1f11fbba5cd57f36e11281c5fc6fd10d316b8824df70d7 --to-repo localhost:5000/projects-bundle-to-deploy`
-`bin/imgpkg copy -b gcr.io/cf-k8s-lifecycle-tooling-klt/projects-bundle@sha256:77c7e2dd9293499a2a1f11fbba5cd57f36e11281c5fc6fd10d316b8824df70d7 --to-repo localhost:5000/projects-bundle-to-deploy`
+#### Steps of the demo
 
-Explanation of the arguments:
-- `-b k8slt/projects-bundle@sha256:77c7e2dd9293499a2a1f11fbba5cd57f36e11281c5fc6fd10d316b8824df70d7`: Exact version of the software we want to run
-- `--to-repo localhost:5000/projects-bundle-to-deploy`: local repository
+I created
 
-Interesting things to note:
-- All the images are copied to the same repository
-- The copy is done using the SHA
-- `imgpkg` ensures that SHA will never change
+1. Check all the installed packages before creating the package repository
+   `kubectl get packages`
+1. Create the package repository from an OCI Image
+   `bin/kapp deploy -a package-repository -f demo/03-package-repository-cr/package-repository.yaml`
+1. Check all the available packages
+   `kubectl get packages`
 
-### Prepare customization of the configuration
+#### Automatic update of versions
 
-What steps need to be done to customize and prepare to deploy the application
-1. Retrieve the configuration for the app
-   This is done by executing the following command
-   `bin/imgpkg pull -b localhost:5000/projects-bundle-to-deploy@sha256:77c7e2dd9293499a2a1f11fbba5cd57f36e11281c5fc6fd10d316b8824df70d7 -o tmp/projects-bundle`
-   Explanation of the arguments:
-   - `-b localhost:5000/projects-bundle-to-deploy@sha256:77c7e2dd9293499a2a1f11fbba5cd57f36e11281c5fc6fd10d316b8824df70d7`: Exact version of the software we want to run
-   - `-o tmp/projects-bundle`: location where the bundle configuration will be downloaded too
+Talk about creating a package registry
 
-2. Retrieve the overlay's that are needed to adapt this installation
-
-    We need to add the following configuration to vendir.yml
-    ```yaml
-- path: local_configuration
-  contents:
-    - path: .
-      git:
-        url: https://github.com/joaopapereira/webinar-demo-projects
-        ref: origin/local_configuration
-    ```
-   Execute `bash ./prepare-env.sh` to retrieve the needed binaries and configuration
-
-`bin/ytt -f config -f local_configuration/local_config --enable-experiment-schema`
-
-### Deploy
-
-This is done by executing the following command
-`bin/ytt -f config -f local_configuration --enable-experiment-schema | bin/kbld -f- -f .imgpkg/images.yml | bin/kapp deploy -a team-1-projects-app -f- -y`
-
-Above command steps:
-1. Uses `ytt` to merge the application configuration with the local configuration
-   
-   Explanation of the arguments:
-   - `-f config`: Application configured created by the application developer
-   - `-f local_configuration`: Overrides creates by the deployer to configure application
-    
-2. Uses `kbld` to  update the OCI image location in the customized deployment configuration
-
-   Explanation of the arguments:
-    - `-f-`: Read from standard in as a file
-    - `-f .imgpkg/images.yml`: Images Lock file with the translation information
-    
-3. Uses kapp to deploy the application
-
-   Explanation of the arguments:
-    - `-a team-1-projects-app`: Name of the deployment
-    - `-f-`: Reads deployment manifest from standard in as a file
-
-To check what is installed executing the following command
-`bin/kapp inspect -a team-1-projects-app`
-
-For more information on `kapp` check [carvel website](https://carvel.dev/kapp)
+1. Producer would add a new version
+   ```bash
+   bin/imgpkg push -b gcr.io/cf-k8s-lifecycle-tooling-klt/demo-package-repository:latest -f demo/03-package-repository-cr/repository-v2
+   ```
+1. Check the packages available
+   `kubectl get packages`

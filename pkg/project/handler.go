@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/joaopapereira/webinar-demo-projects/pkg/clientset/v1alpha1"
+	"github.com/joaopapereira/kubecon-demo-projects/pkg/clientset/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/json"
 )

@@ -1,4 +1,4 @@
-#@schema/match data_values=True
+#@data/values
 ---
 crd:
   group: example.carvel.dev
@@ -7,8 +7,4 @@ crd:
 app:
   namespace: "project-app"
 
-projects:
-  - name: ""
-    namespace: "default"
-    #@schema/nullable
-    description: ""
+projects: []

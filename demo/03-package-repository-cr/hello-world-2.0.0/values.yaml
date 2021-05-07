@@ -1,0 +1,26 @@
+# Default values for hello-world.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: gcr.io/cf-k8s-lifecycle-tooling-klt/demo-projects-app@sha256:ec8a8d64139cfedce7b6850bc931fb657d08f64ab58d3df19d236a62b541bd87
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+
+service:
+  type: ClusterIP
+  port: 80
+
+app:
+  message: Some message from chart

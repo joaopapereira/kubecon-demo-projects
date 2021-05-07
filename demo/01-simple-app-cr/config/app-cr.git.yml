@@ -1,0 +1,20 @@
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+
+metadata:
+  name: simple-app
+  namespace: demo-1-ns
+
+spec:
+  serviceAccountName: demo-1-sa
+  fetch:
+    - git:
+        url: https://github.com/joaopapereira/kubecon-demo-projects
+        ref: origin/main
+        subPath: demo/simple-app-cr
+  template:
+    - helmTemplate:
+        path: hello-world
+  deploy:
+    - kapp: { }
+

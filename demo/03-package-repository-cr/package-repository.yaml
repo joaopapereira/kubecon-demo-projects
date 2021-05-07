@@ -1,0 +1,8 @@
+apiVersion: install.package.carvel.dev/v1alpha1
+kind: PackageRepository
+metadata:
+  name: demo.carvel.dev
+spec:
+  fetch:
+    imgpkgBundle:
+       image: gcr.io/cf-k8s-lifecycle-tooling-klt/demo-package-repository:latest

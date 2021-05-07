@@ -1,0 +1,10 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: gcr.io/cf-k8s-lifecycle-tooling-klt/demo-hello-world-bundle@sha256:1394117160e6c5d64a073998169cc7821b54c85013160a34763d7ec9bed7c9dc
+  image: gcr.io/cf-k8s-lifecycle-tooling-klt/demo-hello-world-bundle@sha256:1394117160e6c5d64a073998169cc7821b54c85013160a34763d7ec9bed7c9dc
+- annotations:
+    kbld.carvel.dev/id: gcr.io/cf-k8s-lifecycle-tooling-klt/demo-hello-world-bundle@sha256:d47e339f2314443fd7b12e1b6485a7e1dbfa3a44fc32c341ca283b74d0a6d08c
+  image: gcr.io/cf-k8s-lifecycle-tooling-klt/demo-hello-world-bundle@sha256:d47e339f2314443fd7b12e1b6485a7e1dbfa3a44fc32c341ca283b74d0a6d08c
+kind: ImagesLock

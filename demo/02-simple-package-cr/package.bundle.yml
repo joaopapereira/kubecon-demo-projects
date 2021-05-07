@@ -1,0 +1,21 @@
+apiVersion: package.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: hello-world-helm.1.0.0
+spec:
+  publicName: hello-world.carvel.dev
+  version: 1.0.0
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: gcr.io/cf-k8s-lifecycle-tooling-klt/demo-hello-world-bundle@sha256:34e32fc1f275ed71ec27e8b507eb8409ba3015fa84fa4a0ddad1346340193784
+      template:
+        - helmTemplate:
+            path: .
+        - kbld:
+            paths:
+              - "-" # Read the output of the helm template command and provide it to `kbld`
+              - .imgpkg/images.yml # Used to update the image location if the bundle was copied between registries
+      deploy:
+        - kapp: { }

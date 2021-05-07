@@ -8,7 +8,7 @@ directories:
       url: https://api.github.com/repos/vmware-tanzu/carvel-kapp/releases/35262973
     path: github.com/vmware-tanzu/carvel-kapp
   - githubRelease:
-      url: https://api.github.com/repos/vmware-tanzu/carvel-imgpkg/releases/37371286
+      url: https://api.github.com/repos/vmware-tanzu/carvel-imgpkg/releases/40849474
     path: github.com/vmware-tanzu/carvel-imgpkg
   - githubRelease:
       url: https://api.github.com/repos/vmware-tanzu/carvel-kbld/releases/36358084

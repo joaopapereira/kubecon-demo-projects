@@ -6,7 +6,7 @@ package v1alpha1
 import (
     "context"
 
-	"github.com/joaopapereira/webinar-demo-projects/pkg/api/types/v1alpha1"
+	"github.com/joaopapereira/kubecon-demo-projects/pkg/api/types/v1alpha1"
     metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
     "k8s.io/apimachinery/pkg/watch"
     "k8s.io/client-go/kubernetes/scheme"
